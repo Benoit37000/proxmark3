@@ -26,9 +26,9 @@ private:
 	double GraphPixelsPerPoint;
 	int CursorAPos;
 	int CursorBPos;
-	void PlotGraph(int *buffer, int len, QRect r,QPainter* painter, int graphNum);
+	void PlotGraph(int *buffer, int len, QRect r,QRect r2, QPainter* painter, int graphNum);
 	void plotGridLines(QPainter* painter,QRect r);
-	int xCoordOf(int i );
+	int xCoordOf(int i, QRect r );
 	int yCoordOf(int v, QRect r, int maxVal);
 	int valueOf_yCoord(int y, QRect r, int maxVal);
 	QColor getColor(int graphNum);
