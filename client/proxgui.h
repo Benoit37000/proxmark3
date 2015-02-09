@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------------
 // GUI functions
 //-----------------------------------------------------------------------------
+#include <string.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -19,13 +20,20 @@ void MainGraphics(void);
 void InitGraphics(int argc, char **argv);
 void ExitGraphics(void);
 
-#define MAX_GRAPH_TRACE_LEN (1024*128)
+#define MAX_GRAPH_TRACE_LEN (40000 * 8 )
 extern int GraphBuffer[MAX_GRAPH_TRACE_LEN];
 extern int GraphTraceLen;
+extern int s_Buff[MAX_GRAPH_TRACE_LEN];
+
 extern double CursorScaleFactor;
 extern int PlotGridX, PlotGridY, PlotGridXdefault, PlotGridYdefault;
 extern int CommandFinished;
 extern int offline;
+
+//Operations defined in data_operations
+extern int autoCorr(const int* in, int *out, size_t len, int window);
+extern int directionalThreshold(const int* in, int *out, size_t len, int8_t up, int8_t down);
+
 
 #ifdef __cplusplus
 }

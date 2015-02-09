@@ -11,6 +11,7 @@
 #ifndef GRAPH_H__
 #define GRAPH_H__
 #include <stdint.h>
+#include "data_operations.h"
 
 void AppendGraph(int redraw, int clock, int bit);
 int ClearGraph(int redraw);
@@ -23,9 +24,5 @@ void setGraphBuf(uint8_t *buff, size_t size);
 bool HasGraphData();
 void DetectHighLowInGraph(int *high, int *low, bool addFuzz); 
 
-// Max graph trace len: 40000 (bigbuf) * 8 (at 1 bit per sample)
-#define MAX_GRAPH_TRACE_LEN (40000 * 8 )
 
-extern int GraphBuffer[MAX_GRAPH_TRACE_LEN];
-extern int GraphTraceLen;
 #endif

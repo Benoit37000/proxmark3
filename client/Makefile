@@ -60,6 +60,7 @@ CMDSRCS = 	nonce2key/crapto1.c\
 		loclass/ikeys.c \
 		loclass/elite_crack.c\
 		loclass/fileutils.c\
+			data_operations.c\
 			mifarehost.c\
 			crc16.c \
 			iso14443crc.c \

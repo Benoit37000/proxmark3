@@ -22,7 +22,7 @@
 #include "cmddata.h"
 #include "lfdemod.h"
 #include "usb_cmd.h"
-
+#include "data_operations.h"
 uint8_t DemodBuffer[MAX_DEMOD_BUF_LEN];
 uint8_t g_debugMode;
 int DemodBufferLen;
@@ -439,37 +439,15 @@ int Cmdaskrawdemod(const char *Cmd)
   return 1;
 }
 
+
 int CmdAutoCorr(const char *Cmd)
 {
-  static int CorrelBuffer[MAX_GRAPH_TRACE_LEN];
-
   int window = atoi(Cmd);
-
-  if (window == 0) {
-    PrintAndLog("needs a window");
-    return 0;
-  }
-  if (window >= GraphTraceLen) {
-    PrintAndLog("window must be smaller than trace (%d samples)",
-      GraphTraceLen);
-    return 0;
-  }
-
-  PrintAndLog("performing %d correlations", GraphTraceLen - window);
-
-  for (int i = 0; i < GraphTraceLen - window; ++i) {
-    int sum = 0;
-    for (int j = 0; j < window; ++j) {
-      sum += (GraphBuffer[j]*GraphBuffer[i + j]) / 256;
-    }
-    CorrelBuffer[i] = sum;
-  }
-  GraphTraceLen = GraphTraceLen - window;
-  memcpy(GraphBuffer, CorrelBuffer, GraphTraceLen * sizeof (int));
-
+  autoCorr(GraphBuffer, GraphBuffer,GraphTraceLen,window);
   RepaintGraphWindow();
   return 0;
 }
+
 
 int CmdBitsamples(const char *Cmd)
 {
@@ -1670,8 +1648,8 @@ int CmdLoad(const char *Cmd)
 	
   FILE *f = fopen(filename, "r");
   if (!f) {
-     PrintAndLog("couldn't open '%s'", filename);
-    return 0;
+	PrintAndLog("couldn't open '%s'", filename);
+	return 0;
   }
 
   GraphTraceLen = 0;
@@ -2033,30 +2011,7 @@ int CmdDirectionalThreshold(const char *Cmd)
 
   printf("Applying Up Threshold: %d, Down Threshold: %d\n", upThres, downThres);
 
-  int lastValue = GraphBuffer[0];
-  GraphBuffer[0] = 0; // Will be changed at the end, but init 0 as we adjust to last samples value if no threshold kicks in.
-
-  for (int i = 1; i < GraphTraceLen; ++i) {
-    // Apply first threshold to samples heading up
-    if (GraphBuffer[i] >= upThres && GraphBuffer[i] > lastValue)
-    {
-      lastValue = GraphBuffer[i]; // Buffer last value as we overwrite it.
-      GraphBuffer[i] = 1;
-    }
-    // Apply second threshold to samples heading down
-    else if (GraphBuffer[i] <= downThres && GraphBuffer[i] < lastValue)
-    {
-      lastValue = GraphBuffer[i]; // Buffer last value as we overwrite it.
-      GraphBuffer[i] = -1;
-    }
-    else
-    {
-      lastValue = GraphBuffer[i]; // Buffer last value as we overwrite it.
-      GraphBuffer[i] = GraphBuffer[i-1];
-
-    }
-  }
-  GraphBuffer[0] = GraphBuffer[1]; // Aline with first edited sample.
+  directionalThreshold(GraphBuffer, GraphBuffer,GraphTraceLen, upThres, downThres);
   RepaintGraphWindow();
   return 0;
 }
