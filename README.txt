@@ -1,7 +1,5 @@
 NOTICE:
-(2014-03-26)
-This is now the official Proxmark repository!
-
+COPY OF PROXMARK3
 INTRODUCTION:
 
 The proxmark3 is a powerful general purpose RFID tool, the size of a deck
